@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>數位服務入口網 - 無障礙歡迎首頁</title>
+  <!-- 載入 Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* 鍵盤聚焦高可見性樣式 (符合 WCAG 2.4.7 規範) */
+    *:focus-visible {
+      outline: 3px solid #f59e0b !important;
+      outline-offset: 3px !important;
+      box-shadow: 0 0 0 5px rgba(15, 23, 42, 0.4) !important;
+    }
+
+    /* 跳過導覽列快捷連結 (WCAG 2.4.1) */
+    .skip-link {
+      position: absolute;
+      top: -9999px;
+      left: 1rem;
+      z-index: 9999;
+      background-color: #0f172a;
+      color: #ffffff;
+      padding: 0.75rem 1.25rem;
+      border: 2px solid #f59e0b;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: top 0.2s ease-in-out;
+    }
+    .skip-link:focus {
+      top: 1rem;
+    }
+
+    /* 高對比黑金模式 (WCAG 1.4.3 增強輔助) */
+    body.high-contrast {
+      background-color: #000000 !important;
+      color: #ffffff !important;
+    }
+    body.high-contrast .bg-card {
+      background-color: #121212 !important;
+      border-color: #ffd700 !important;
+    }
+    body.high-contrast .text-primary {
+      color: #ffd700 !important;
+    }
+    body.high-contrast .text-muted {
+      color: #f1f5f9 !important;
+    }
+    body.high-contrast a:hover {
+      text-decoration: underline !important;
+    }
+    body.high-contrast .badge-contrast {
+      background-color: #ffd700 !important;
+      color: #000000 !important;
+    }
+
+    /* 字級縮放基底 */
+    html {
+      font-size: 16px;
+    }
+    html.font-large {
+      font-size: 18px;
+    }
+    html.font-xlarge {
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col transition-colors duration-200">
+
+  <!-- 跳過導覽列快捷連結 (螢幕閱讀器與純鍵盤用戶必備) -->
+  <a href="#main-content" class="skip-link">跳至主要內容區 (Skip to Main Content)</a>
+
+  <!-- ARIA 即時公告區 (通知螢幕閱讀器狀態變更) -->
+  <div id="a11y-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- 頁首與無障礙功能列 -->
+  <header class="bg-slate-900 text-white shadow-md border-b-4 border-amber-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between py-4 gap-4">
+        <!-- 網站標誌與名稱 -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-amber-500 flex items-center justify-center text-slate-950 font-black text-2xl shadow" aria-hidden="true">
+            門
+          </div>
+          <div>
+            <span class="text-xl font-bold tracking-tight block">數位平權入口網</span>
+            <span class="text-xs text-slate-300 block">符合網站無障礙規範 2.0 版 (WCAG 2.0 AA)</span>
+          </div>
+        </div>
+
+        <!-- 無障礙輔助工具列 (字級切換與高對比開關) -->
+        <nav aria-label="無障礙偏好設定" class="flex flex-wrap items-center gap-2 text-sm bg-slate-800/80 p-2 rounded-xl border border-slate-700">
+          <span class="text-slate-300 font-medium px-2 text-xs flex items-center gap-1">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+            </svg>
+            文字大小：
+          </span>
+          <button id="font-normal-btn" type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-white font-medium border border-slate-600 active:scale-95" aria-label="重設字級為預設大小" aria-pressed="true">標準</button>
+          <button id="font-large-btn" type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-white font-medium border border-slate-600 active:scale-95" aria-label="放大字級為中" aria-pressed="false">放大</button>
+          <button id="font-xlarge-btn" type="button" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-white font-medium border border-slate-600 active:scale-95" aria-label="放大字級為特大" aria-pressed="false">特大</button>
+
+          <span class="text-slate-600 mx-1" aria-hidden="true">|</span>
+
+          <!-- 高對比切換開關 -->
+          <button id="contrast-toggle-btn" type="button" class="px-3 py-1 rounded bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold transition flex items-center gap-1.5 active:scale-95" aria-pressed="false">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14V4a6 6 0 010 12z" clip-rule="evenodd"></path>
+            </svg>
+            <span>高對比模式</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主要內容區 -->
+  <main id="main-content" class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12" tabindex="-1">
+    
+    <!-- 英雄介紹區 (Hero Section) -->
+    <section class="bg-gradient-to-r from-blue-900 to-indigo-900 text-white rounded-3xl p-6 sm:p-10 mb-10 shadow-lg border border-blue-800 bg-card" aria-labelledby="hero-title">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-800/80 text-amber-300 text-xs font-semibold mb-4 border border-blue-700">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse" aria-hidden="true"></span>
+          便捷、友善、全面無障礙
+        </div>
+        <h1 id="hero-title" class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4 text-primary leading-tight">
+          歡迎使用數位服務入口網
+        </h1>
+        <p class="text-base sm:text-lg text-slate-200 mb-8 leading-relaxed text-muted">
+          本平台全面落實《網站無障礙規範 2.0 版》等級 AA，提供全鍵盤巡覽、螢幕閱讀器語音支援與高對比閱讀模式。請選取下方快捷服務或進入活動報名測試區。
+        </p>
+
+        <!-- 焦點行動按鈕 (Primary CTA) -->
+        <div class="flex flex-wrap items-center gap-4">
+          <a href="https://script.google.com/macros/s/AKfycbwVi7j5ipyi6nm-6Ta-fkkEuAAxWuEU7uIAq8l-SYLPk7BLaNISd7WDu10S4jLb2wiDPQ/exec"
+             target="_blank"
+             rel="noopener noreferrer"
+             class="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl shadow-md transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 badge-contrast"
+             aria-label="前往 活動報名系統_測試區 (開啟於新分頁視窗)">
+            <svg class="w-5 h-5 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+            <span>活動報名系統_測試區</span>
+            <!-- 另開新視窗無障礙圖標與輔助說明 -->
+            <svg class="w-4 h-4 ml-0.5 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+            <span class="sr-only">(另開新視窗)</span>
+          </a>
+
+          <a href="#quick-hub" class="inline-flex items-center justify-center px-5 py-3.5 bg-slate-800/90 hover:bg-slate-700 text-white font-semibold rounded-xl border border-slate-600 transition">
+            瀏覽各項服務導覽
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 核心服務快捷入口區塊 -->
+    <section id="quick-hub" class="mb-12" aria-labelledby="quick-access-title">
+      <div class="flex items-center justify-between mb-6 border-b pb-3 border-slate-200">
+        <h2 id="quick-access-title" class="text-2xl font-bold tracking-tight text-slate-900 flex items-center gap-2 text-primary">
+          <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+          </svg>
+          核心服務快捷入口
+        </h2>
+        <span class="text-xs text-slate-500 text-muted">支援鍵盤 Tab 鍵逐項導覽</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- 卡片 1：活動報名系統_測試區 (重點項目) -->
+        <article class="bg-white rounded-2xl p-6 border-2 border-amber-400/80 shadow-md hover:shadow-xl transition-all duration-200 flex flex-col justify-between relative bg-card">
+          <div class="absolute top-4 right-4">
+            <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-amber-100 text-amber-900 border border-amber-300 badge-contrast">
+              外部系統
+            </span>
+          </div>
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-4" aria-hidden="true">
+              <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mb-2 text-primary">
+              活動報名系統_測試區
+            </h3>
+            <p class="text-slate-600 text-sm mb-4 leading-relaxed text-muted">
+              提供即時活動名額查詢、表單填寫及預約測試功能。此系統將在新視窗中載入。
+            </p>
+          </div>
+          <div class="pt-4 border-t border-slate-100">
+            <!-- 另開新視窗連結 (遵守 WCAG 告知原則) -->
+            <a href="https://script.google.com/macros/s/AKfycbwVi7j5ipyi6nm-6Ta-fkkEuAAxWuEU7uIAq8l-SYLPk7BLaNISd7WDu10S4jLb2wiDPQ/exec"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="inline-flex items-center gap-1.5 text-blue-700 hover:text-blue-900 font-bold group"
+               aria-label="前往 活動報名系統_測試區 (另開新視窗)">
+              <span class="group-hover:underline">前往報名系統</span>
+              <svg class="w-4 h-4 text-blue-600 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+              </svg>
+              <span class="text-xs text-slate-500 font-normal ml-1 text-muted">(另開新視窗)</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- 卡片 2：無障礙服務指南 -->
+        <article class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between bg-card">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center mb-4" aria-hidden="true">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mb-2 text-primary">無障礙服務指南</h3>
+            <p class="text-slate-600 text-sm mb-4 leading-relaxed text-muted">
+              提供螢幕報讀快捷鍵操作表、高齡者友善字型指引與數位平權輔助說明文件。
+            </p>
+          </div>
+          <div class="pt-4 border-t border-slate-100">
+            <a href="#accessibility-guide" class="inline-flex items-center gap-1.5 text-blue-700 hover:text-blue-900 font-bold group">
+              <span class="group-hover:underline">閱讀指引手冊</span>
+              <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </article>
+
+        <!-- 卡片 3：線上諮詢與客服管道 -->
+        <article class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between bg-card">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mb-4" aria-hidden="true">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mb-2 text-primary">無障礙諮詢支援</h3>
+            <p class="text-slate-600 text-sm mb-4 leading-relaxed text-muted">
+              提供即時文字諮詢、電話手語翻譯預約服務與專人無障礙障礙排除管道。
+            </p>
+          </div>
+          <div class="pt-4 border-t border-slate-100">
+            <a href="#support-channel" class="inline-flex items-center gap-1.5 text-blue-700 hover:text-blue-900 font-bold group">
+              <span class="group-hover:underline">聯繫支援專線</span>
+              <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 最新消息與系統公告 (具備語意結構) -->
+    <section class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-12 bg-card" aria-labelledby="news-title">
+      <div class="flex items-center justify-between mb-4">
+        <h2 id="news-title" class="text-xl font-bold text-slate-900 flex items-center gap-2 text-primary">
+          <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+          </svg>
+          最新消息與重要公告
+        </h2>
+      </div>
+
+      <ul class="divide-y divide-slate-100" role="list">
+        <li class="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="flex items-center gap-3">
+            <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-semibold rounded badge-contrast">公告</span>
+            <span class="text-slate-800 font-medium text-primary">「活動報名系統_測試區」正式上線，歡迎填寫體驗回饋。</span>
+          </div>
+          <time datetime="2026-09-29" class="text-xs text-slate-500 text-muted">2026-09-29</time>
+        </li>
+        <li class="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="flex items-center gap-3">
+            <span class="px-2 py-0.5 bg-slate-100 text-slate-800 text-xs font-semibold rounded badge-contrast">規範</span>
+            <span class="text-slate-800 font-medium text-primary">全站完成 WCAG 2.0 AA 級無障礙標準檢測與高對比模式升級。</span>
+          </div>
+          <time datetime="2026-09-20" class="text-xs text-slate-500 text-muted">2026-09-20</time>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- 頁尾區域 (Footer) -->
+  <footer class="bg-slate-900 text-slate-300 py-8 border-t border-slate-800 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <p class="font-bold text-white text-base mb-1">數位平權入口網</p>
+        <p class="text-xs text-slate-400">本網站設計完全符合國家標準《網站無障礙規範 2.0 版》等級 AA 規範。</p>
+        <p class="text-xs text-slate-500 mt-1">© 2026 All Rights Reserved.</p>
+      </div>
+
+      <!-- 無障礙宣告標章與外部連結提示 -->
+      <div class="flex items-center gap-4">
+        <div class="border border-slate-700 bg-slate-800/80 px-3 py-1.5 rounded-lg flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-emerald-400" aria-hidden="true"></span>
+          <span class="text-xs font-semibold text-slate-200">WCAG 2.0 AA 合格</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 原生 JavaScript：管理字級縮放、高對比切換與 ARIA 即時廣播 -->
+  <script>
+    (function () {
+      const htmlEl = document.documentElement;
+      const bodyEl = document.body;
+      const announcer = document.getElementById('a11y-announcer');
+
+      // 語音廣播提示工具 (提供輔助技術回饋)
+      function announce(message) {
+        if (announcer) {
+          announcer.textContent = '';
+          setTimeout(() => {
+            announcer.textContent = message;
+          }, 50);
+        }
+      }
+
+      // 1. 字級縮放切換控制
+      const fontNormalBtn = document.getElementById('font-normal-btn');
+      const fontLargeBtn = document.getElementById('font-large-btn');
+      const fontXLargeBtn = document.getElementById('font-xlarge-btn');
+      const fontBtns = [fontNormalBtn, fontLargeBtn, fontXLargeBtn];
+
+      function resetFontButtons() {
+        fontBtns.forEach(btn => btn.setAttribute('aria-pressed', 'false'));
+      }
+
+      fontNormalBtn.addEventListener('click', () => {
+        htmlEl.classList.remove('font-large', 'font-xlarge');
+        resetFontButtons();
+        fontNormalBtn.setAttribute('aria-pressed', 'true');
+        announce('字體大小已設定為標準');
+      });
+
+      fontLargeBtn.addEventListener('click', () => {
+        htmlEl.classList.remove('font-xlarge');
+        htmlEl.classList.add('font-large');
+        resetFontButtons();
+        fontLargeBtn.setAttribute('aria-pressed', 'true');
+        announce('字體大小已切換為放大');
+      });
+
+      fontXLargeBtn.addEventListener('click', () => {
+        htmlEl.classList.remove('font-large');
+        htmlEl.classList.add('font-xlarge');
+        resetFontButtons();
+        fontXLargeBtn.setAttribute('aria-pressed', 'true');
+        announce('字體大小已切換為特大');
+      });
+
+      // 2. 高對比模式開關
+      const contrastBtn = document.getElementById('contrast-toggle-btn');
+      contrastBtn.addEventListener('click', () => {
+        const isContrast = bodyEl.classList.toggle('high-contrast');
+        contrastBtn.setAttribute('aria-pressed', isContrast ? 'true' : 'false');
+        if (isContrast) {
+          announce('已開啟高對比黑金模式');
+        } else {
+          announce('已關閉高對比模式，恢復一般色彩');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
